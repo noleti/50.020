@@ -11,8 +11,8 @@
 sudo tar xvzf info.tar.gz -C /var/lib/dpkg/info/
 
 # "fix" some removal scripts
-sudo echo "" > /var/lib/dpkg/info/postgresql-9.3.prerm
-sudo echo "" > /var/lib/dpkg/info/postgresql-client-9.3.prerm
+sudo rm /var/lib/dpkg/info/postgresql-9.3.prerm
+sudo rm /var/lib/dpkg/info/postgresql-client-9.3.prerm
 
 sudo rm -r /var/log/postgresql
 sudo rm -r /var/lib/postgresql
@@ -23,8 +23,6 @@ sudo apt-get purge postgresql-client-9.3 postgresql-9.3 postgresql-common postgr
 # lets clean up the gems and other garbage
 sudo rm -rf /var/lib/gems /usr/bin/pg_config.libpq-dev /usr/lib/ruby /etc/postgresql-common/user_clusters
 
-sudo cp /usr/local/share/metasploit-framework/database.yml.old /usr/local/share/metasploit-framework/database.yml
-
 # sed magic on the bashrc, remove the defanged option
 sed -i 's/msfconsole -d/msfconsole/' ~/.bashrc
 
@@ -33,10 +31,10 @@ bash msf_install.sh -i
 
 # Now, re-run the bundle install as normal user
 cd /usr/local/share/metasploit-framework/
-rm msfconsole msfrpcd
-git pull
+sudo rm -f msfconsole msfrpcd
+sudo git pull
 sudo msfupdate
-bundle install
+#bundle install
 sudo rm -rf /home/student/.msf4
 
 # This is ugly
@@ -48,14 +46,13 @@ sudo chown -R student.student /usr/local/share/metasploit-framework/log
 
 # Fix user setup in database
 
-sudo -u postgres psql postgres -c "drop role msf"
 sudo -u postgres psql postgres -c "drop database msf"
+sudo -u postgres psql postgres -c "drop role msf"
 
 sudo -u postgres psql postgres -c "create role msf login password 'msf'"
 sudo -u postgres psql postgres -c "CREATE DATABASE msf OWNER msf"
 
-# last but not least, we need to reboot for some reason to get psql to work
-#sudo reboot
+# source our new .bashrc
+. ~/.bashrc
 
-# After reboot, execute the msf_install again
-# cd Downloads && bash msf_install.sh
+# all done, that was fun?

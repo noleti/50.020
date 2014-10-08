@@ -23,13 +23,18 @@ sudo apt-get purge postgresql-client-9.3 postgresql-9.3 postgresql-common postgr
 # lets clean up the gems and other garbage
 sudo rm -rf /var/lib/gems /usr/bin/pg_config.libpq-dev /usr/lib/ruby /etc/postgresql-common/user_clusters
 
+sudo cp /usr/local/share/metasploit-framework/database.yml.old /usr/local/share/metasploit-framework/database.yml
+
+# sed magic on the bashrc, remove the defanged option
+sed -i 's/msfconsole -d/msfconsole/' ~/.bashrc
+
 # Start the install process again
 bash msf_install.sh -i
 
 # Now, re-run the bundle install as normal user
 cd /usr/local/share/metasploit-framework/
-sudo rm msfconsole msfrpcd
-sudo git pull
+rm msfconsole msfrpcd
+git pull
 sudo msfupdate
 bundle install
 sudo rm -rf /home/student/.msf4

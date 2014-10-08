@@ -30,8 +30,16 @@ bash msf_install.sh -i
 cd /usr/local/share/metasploit-framework/
 sudo rm msfconsole msfrpcd
 sudo git pull
+sudo msfupdate
 bundle install
 sudo rm -rf /home/student/.msf4
+
+# This is ugly
+sudo chown -R student.student /var/lib/gems
+gem install robots
+
+# log file
+sudo chown -R student.student /usr/local/share/metasploit-framework/log
 
 # last but not least, we need to reboot for some reason to get psql to work
 #sudo reboot

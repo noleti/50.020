@@ -46,6 +46,14 @@ gem install robots
 # log file
 sudo chown -R student.student /usr/local/share/metasploit-framework/log
 
+# Fix user setup in database
+
+sudo -u postgres psql postgres -c "drop role msf"
+sudo -u postgres psql postgres -c "drop database msf"
+
+sudo -u postgres psql postgres -c "create role msf login password 'msf'"
+sudo -u postgres psql postgres -c "CREATE DATABASE msf OWNER msf"
+
 # last but not least, we need to reboot for some reason to get psql to work
 #sudo reboot
 
